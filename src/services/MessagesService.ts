@@ -20,6 +20,15 @@ class MessagesService {
 
         return await messagesRepository.save(message)
     }
+
+    async listByUser(user_id: string) {
+        const messagesRepository = getCustomRepository(MessagesRepository)
+
+        return await messagesRepository.find({
+            where: { user_id },
+            relations: ["user"]
+        })
+    }
 }
 
 export { MessagesService }
