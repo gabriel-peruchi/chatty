@@ -24,6 +24,7 @@ io.on("connect", async (socket) => {
 
         if (connection) {
             connection.socket_id = socket_id
+            connection.admin_id = null
             await connectionsService.create(connection)
         } else {
             await connectionsService.create({ socket_id, user_id })
@@ -36,7 +37,6 @@ io.on("connect", async (socket) => {
 
         const allConnetcionsWithoutAdmin = await connectionsService.findAllWithoutAdmin()
         io.emit("admin_list_all_users", allConnetcionsWithoutAdmin)
-
     })
 
     socket.on("client_send_to_admin", async (params) => {
@@ -44,13 +44,22 @@ io.on("connect", async (socket) => {
 
         const socket_id = socket.id
 
-        const { user_id } = await connectionsService.findBySocketId(socket_id)
+        const { user } = await connectionsService.findBySocketId(socket_id)
 
-        const message = await messagesService.create({ text, user_id })
+        const message = await messagesService.create({ text, user_id: user.id })
 
         io.to(socket_admin_id).emit("admin_receive_message", {
             message,
-            socket_id
+            socket_id,
+            user
         })
+    })
+
+    socket.on("client_close_support", async (params) => {
+        const { socket_id, user } = await connectionsService.findBySocketId(
+            socket.id
+        )
+
+        io.emit("admin_client_close_support", { socket_id, user })
     })
 })

@@ -79,15 +79,24 @@ function sendMessage(user_id) {
 }
 
 socket.on("admin_receive_message", data => {
-    const connectionUser = connectionsUsers.find(connection => connection.socket_id === data.socket_id)
-
     const divMessage = document.createElement('div')
 
     divMessage.className = "admin_message_client"
-    divMessage.innerHTML = `<span>${connectionUser.user.email}<span/>`
+    divMessage.innerHTML = `<span>${data.user.email}<span/>`
     divMessage.innerHTML += `<span>${data.message.text}<span/>`
     divMessage.innerHTML += `<span class="admin_date">${dayjs(data.message.created_at).format('DD/MM/YYYY HH:mm:ss')}<span/>`
 
-    const divMessagesByUser = document.getElementById(`allMessages${connectionUser.user_id}`)
+    const divMessagesByUser = document.getElementById(`allMessages${data.user.id}`)
     divMessagesByUser.appendChild(divMessage)
+})
+
+socket.on("admin_client_close_support", params => {
+    const divMessage = document.createElement('div')
+
+    divMessage.className = "admin_message_client message_close_support"
+    divMessage.innerHTML = `<span>${params.user.email}<span/>`
+    divMessage.innerHTML += `<span>Encerrou o suporte.<span/>`
+
+    const divMessagesByUser = document.getElementById(`allMessages${params.user.id}`)
+    divMessagesByUser && divMessagesByUser.appendChild(divMessage)
 })

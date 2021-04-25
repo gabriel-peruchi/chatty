@@ -11,6 +11,9 @@ document.querySelector("#start_chat").addEventListener("click", (event) => {
     const chat_in_support = document.getElementById("chat_in_support")
     chat_in_support.style.display = "block"
 
+    const btn_support = document.getElementById("btn_support")
+    btn_support.style.display = "none"
+
     const email = document.getElementById("email").value
     const text = document.getElementById("txt_help").value
 
@@ -60,11 +63,23 @@ document.querySelector("#start_chat").addEventListener("click", (event) => {
     })
 })
 
+document.querySelector("#close_chat").addEventListener("click", (event) => {
+    const chat_in_support = document.getElementById("chat_in_support")
+    chat_in_support.style.display = "none"
+
+    const btn_support = document.getElementById("btn_support")
+    btn_support.style.display = "flex"
+
+    socket.emit("client_close_support")
+})
+
 document.getElementById('send_message_button').addEventListener('click', (event) => {
-    const text = document.getElementById("message_user").value
+    const text = document.getElementById("message_user")
+
+    if (!text.value) return
 
     const params = {
-        text,
+        text: text.value,
         socket_admin_id
     }
 
@@ -72,7 +87,9 @@ document.getElementById('send_message_button').addEventListener('click', (event)
 
     const templateClient = document.getElementById("message-user-template").innerHTML
 
-    const rendered = Mustache.render(templateClient, { message: text, email: emailUser })
+    const rendered = Mustache.render(templateClient, { message: text.value, email: emailUser })
 
     document.getElementById("messages").innerHTML += rendered
+
+    text.value = ""
 })

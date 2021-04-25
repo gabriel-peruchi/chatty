@@ -33,7 +33,10 @@ class ConnectionsService {
     }
 
     async findBySocketId(socket_id: string) {
-        return await this.connectionsRepository.findOne({ socket_id })
+        return await this.connectionsRepository.findOne({
+            where: { socket_id },
+            relations: ["user"]
+        })
     }
 
     async findAllWithoutAdmin() {

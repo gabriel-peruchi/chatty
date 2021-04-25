@@ -15,7 +15,7 @@
   <div class="chat chat_support" id="chat_in_support">
     <div class="in_support_header">
       <span>Em suporte ... </span>
-      <div class="icon_close" onclick="closeChat();">
+      <div class="icon_close" id="close_chat">
         <img src="/images/close.png" />
       </div>
     </div>
@@ -51,7 +51,7 @@
   <div class="chat chat_support" id="chat_help">
     <div class="in_support_header">
       <span>Iniciar um chat de suporte</span>
-      <div class="icon_close" onclick="closeChat();">
+      <div class="icon_close" onclick="closeChatHelp();">
         <img src="/images/close.png" />
       </div>
     </div>
@@ -70,14 +70,14 @@
       </div>
 
       <div class="button">
-        <button class="btn_cancel">Cancelar</button>
+        <button class="btn_cancel" onclick="closeChatHelp();">Cancelar</button>
         <button class="btn_start_chat" id="start_chat">Iniciar chat</button>
       </div>
     </div>
   </div>
 
   <div>
-    <button class="btn_support" id="btn_support" onclick="openChat();">
+    <button class="btn_support" id="btn_support" onclick="openChatHelp();">
       <img src="/images/chat.png" /> Suporte
     </button>
   </div>
@@ -85,7 +85,8 @@
 
 <script>
   onLoad();
-  const chat = document.getElementById("chat_help");
+  const chatHelp = document.getElementById("chat_help");
+  const chatSupport = document.getElementById("chat_in_support");
 
   function onLoad() {
     fetch("http://localhost:3333/settings/admin").then((result) =>
@@ -98,12 +99,14 @@
     );
   }
 
-  function openChat() {
-    chat.style.display = "block";
+  function openChatHelp() {
+    chatHelp.style.display = "block";
+    document.getElementById("txt_help").value = "";
+    document.getElementById("email").value = "";
   }
 
-  function closeChat() {
-    chat.style.display = "none";
+  function closeChatHelp() {
+    chatHelp.style.display = "none";
   }
 
   function keyUpTextHelp(event) {
