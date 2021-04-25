@@ -31,6 +31,26 @@ class ConnectionsService {
     async findByUserId(user_id: string) {
         return await this.connectionsRepository.findOne({ user_id })
     }
+
+    async findBySocketId(socket_id: string) {
+        return await this.connectionsRepository.findOne({ socket_id })
+    }
+
+    async findAllWithoutAdmin() {
+        return await this.connectionsRepository.find({
+            where: { admin_id: null },
+            relations: ["user"]
+        })
+    }
+
+    async updateAdminId(user_id: string, admin_id: string) {
+        return await this.connectionsRepository
+            .createQueryBuilder()
+            .update(Connection)
+            .set({ admin_id })
+            .where("user_id = :user_id", { user_id })
+            .execute()
+    }
 }
 
 export { ConnectionsService }
